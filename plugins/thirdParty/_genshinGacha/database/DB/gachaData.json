@@ -1,0 +1,307 @@
+{
+    "roleUp": {
+        "1": {
+            "userid": 2641712741,
+            "fiveStar": {
+                "getCount": 0,
+                "notGetCorrespondingCount": 72,
+                "certainUp": false
+            },
+            "fourStar": {
+                "getCount": 0,
+                "notGetCorrespondingCount": 4,
+                "certainUp": false
+            }
+        },
+        "2": {
+            "userid": 1773701277,
+            "fiveStar": {
+                "getCount": 0,
+                "notGetCorrespondingCount": 10,
+                "certainUp": false
+            },
+            "fourStar": {
+                "getCount": 0,
+                "notGetCorrespondingCount": 0,
+                "certainUp": true
+            }
+        },
+        "3": {
+            "userid": 249159022,
+            "fiveStar": {
+                "getCount": 0,
+                "notGetCorrespondingCount": 15,
+                "certainUp": false
+            },
+            "fourStar": {
+                "getCount": 0,
+                "notGetCorrespondingCount": 4,
+                "certainUp": false
+            }
+        },
+        "4": {
+            "userid": 393370336,
+            "fiveStar": {
+                "getCount": 0,
+                "notGetCorrespondingCount": 40,
+                "certainUp": false
+            },
+            "fourStar": {
+                "getCount": 0,
+                "notGetCorrespondingCount": 0,
+                "certainUp": false
+            }
+        },
+        "5": {
+            "userid": 879157739,
+            "fiveStar": {
+                "getCount": 0,
+                "notGetCorrespondingCount": 40,
+                "certainUp": false
+            },
+            "fourStar": {
+                "getCount": 0,
+                "notGetCorrespondingCount": 0,
+                "certainUp": false
+            }
+        },
+        "6": {
+            "userid": 1821035364,
+            "fiveStar": {
+                "getCount": 0,
+                "notGetCorrespondingCount": 80,
+                "certainUp": false
+            },
+            "fourStar": {
+                "getCount": 0,
+                "notGetCorrespondingCount": 9,
+                "certainUp": false
+            }
+        },
+        "7": {
+            "userid": 493955722,
+            "fiveStar": {
+                "getCount": 0,
+                "notGetCorrespondingCount": 10,
+                "certainUp": false
+            },
+            "fourStar": {
+                "getCount": 0,
+                "notGetCorrespondingCount": 8,
+                "certainUp": true
+            }
+        },
+        "8": {
+            "userid": 2304174379,
+            "fiveStar": {
+                "getCount": 0,
+                "notGetCorrespondingCount": 19,
+                "certainUp": true
+            },
+            "fourStar": {
+                "getCount": 0,
+                "notGetCorrespondingCount": 9,
+                "certainUp": false
+            }
+        },
+        "9": {
+            "userid": 1141541298,
+            "fiveStar": {
+                "getCount": 0,
+                "notGetCorrespondingCount": 10,
+                "certainUp": false
+            },
+            "fourStar": {
+                "getCount": 0,
+                "notGetCorrespondingCount": 0,
+                "certainUp": true
+            }
+        },
+        "10": {
+            "userid": 1633120810,
+            "fiveStar": {
+                "getCount": 0,
+                "notGetCorrespondingCount": 20,
+                "certainUp": false
+            },
+            "fourStar": {
+                "getCount": 0,
+                "notGetCorrespondingCount": 1,
+                "certainUp": true
+            }
+        },
+        "11": {
+            "userid": 2278341884,
+            "fiveStar": {
+                "getCount": 0,
+                "notGetCorrespondingCount": 10,
+                "certainUp": false
+            },
+            "fourStar": {
+                "getCount": 0,
+                "notGetCorrespondingCount": 2,
+                "certainUp": true
+            }
+        },
+        "12": {
+            "userid": 2596355704,
+            "fiveStar": {
+                "getCount": 0,
+                "notGetCorrespondingCount": 4,
+                "certainUp": false
+            },
+            "fourStar": {
+                "getCount": 0,
+                "notGetCorrespondingCount": 4,
+                "certainUp": true
+            }
+        },
+        "13": {
+            "userid": 1683749278,
+            "fiveStar": {
+                "getCount": 0,
+                "notGetCorrespondingCount": 20,
+                "certainUp": false
+            },
+            "fourStar": {
+                "getCount": 0,
+                "notGetCorrespondingCount": 2,
+                "certainUp": false
+            }
+        },
+        "14": {
+            "userid": 2517511650,
+            "fiveStar": {
+                "getCount": 0,
+                "notGetCorrespondingCount": 10,
+                "certainUp": false
+            },
+            "fourStar": {
+                "getCount": 0,
+                "notGetCorrespondingCount": 3,
+                "certainUp": true
+            }
+        }
+    },
+    "ordinary": {
+        "1": {
+            "userid": 249159022,
+            "fiveStar": {
+                "getCount": 0,
+                "notGetCorrespondingCount": 22,
+                "certainUp": false
+            },
+            "fourStar": {
+                "getCount": 0,
+                "notGetCorrespondingCount": 6,
+                "certainUp": false
+            }
+        },
+        "2": {
+            "userid": 1735616277,
+            "fiveStar": {
+                "getCount": 0,
+                "notGetCorrespondingCount": 30,
+                "certainUp": false
+            },
+            "fourStar": {
+                "getCount": 0,
+                "notGetCorrespondingCount": 7,
+                "certainUp": false
+            }
+        },
+        "3": {
+            "userid": 2641712741,
+            "fiveStar": {
+                "getCount": 0,
+                "notGetCorrespondingCount": 10,
+                "certainUp": false
+            },
+            "fourStar": {
+                "getCount": 0,
+                "notGetCorrespondingCount": 0,
+                "certainUp": false
+            }
+        }
+    },
+    "armUp": {
+        "1": {
+            "userid": 2641712741,
+            "fiveStar": {
+                "getCount": 0,
+                "notGetCorrespondingCount": 10,
+                "certainUp": true
+            },
+            "fourStar": {
+                "getCount": 0,
+                "notGetCorrespondingCount": 1,
+                "certainUp": false
+            }
+        },
+        "2": {
+            "userid": 249159022,
+            "fiveStar": {
+                "getCount": 0,
+                "notGetCorrespondingCount": 2,
+                "certainUp": false
+            },
+            "fourStar": {
+                "getCount": 0,
+                "notGetCorrespondingCount": 2,
+                "certainUp": false
+            }
+        },
+        "3": {
+            "userid": 1792385130,
+            "fiveStar": {
+                "getCount": 0,
+                "notGetCorrespondingCount": 10,
+                "certainUp": false
+            },
+            "fourStar": {
+                "getCount": 0,
+                "notGetCorrespondingCount": 0,
+                "certainUp": true
+            }
+        },
+        "4": {
+            "userid": 1773701277,
+            "fiveStar": {
+                "getCount": 0,
+                "notGetCorrespondingCount": 15,
+                "certainUp": false
+            },
+            "fourStar": {
+                "getCount": 0,
+                "notGetCorrespondingCount": 2,
+                "certainUp": false
+            }
+        },
+        "5": {
+            "userid": 1321711834,
+            "fiveStar": {
+                "getCount": 0,
+                "notGetCorrespondingCount": 10,
+                "certainUp": false
+            },
+            "fourStar": {
+                "getCount": 0,
+                "notGetCorrespondingCount": 0,
+                "certainUp": false
+            }
+        },
+        "6": {
+            "userid": 2538147209,
+            "fiveStar": {
+                "getCount": 0,
+                "notGetCorrespondingCount": 0,
+                "certainUp": false
+            },
+            "fourStar": {
+                "getCount": 0,
+                "notGetCorrespondingCount": 0,
+                "certainUp": true
+            }
+        }
+    }
+}
