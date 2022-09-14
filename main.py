@@ -4,13 +4,20 @@
 # python-socketio==4.6.1
 from threading import Timer
 from flask_socketio import socketio
-
+from plugins.helloWorld import *
 from utils.standardPlugin import StandardPlugin
 from utils.basicConfigs import *
 
+GroupPluginList = [ # 指定群启用插件
+
+]
+
+PrivatePluginList = [ # 私聊启用插件
+    HelloWorld,
+]
 
 # standard Python
-sio = socketio.Client(logger=False, engineio_logger=False)
+sio = socketio.Client(logger=True, engineio_logger=True)
 
 # SocketIO Client
 # sio = socketio.AsyncClient(logger=True, engineio_logger=True)

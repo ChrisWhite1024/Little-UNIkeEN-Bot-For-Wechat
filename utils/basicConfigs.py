@@ -11,12 +11,4 @@ ROOT_ADMIN_WXID = [
     'zhanshen9045',
 ]
 
-GroupPluginList = [ # 指定群启用插件
-
-]
-
-PrivatePluginList = [ # 私聊启用插件
-
-]
-
 TXT_PERMISSION_DENIED = ""
