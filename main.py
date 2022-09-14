@@ -17,7 +17,7 @@ PrivatePluginList = [ # 私聊启用插件
 ]
 
 # standard Python
-sio = socketio.Client(logger=True, engineio_logger=True)
+sio = socketio.Client(logger=False, engineio_logger=False)
 
 # SocketIO Client
 # sio = socketio.AsyncClient(logger=True, engineio_logger=True)
@@ -86,4 +86,5 @@ def main():
 
 
 if __name__ == '__main__':
+    print(os.path.join(FONTS_PATH, 'SourceHanSansCN-Normal.otf'))
     main()
