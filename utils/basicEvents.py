@@ -1,4 +1,3 @@
-from this import d
 import requests
 import json
 import os
@@ -39,7 +38,7 @@ class Send():
     self.payLoad["ToUserName"] = ToUserName
     self.payLoad["ImagePath" if os.path.isfile(ImagePath) else "ImageUrl"] = ImagePath
     self.sendPayload("SendImage")
-  # 发送消息
+  # 发送消息 有待添加@功能
   def sendMsg(self, ToUserName, Content, AtUsers=""): 
     self.payLoad["ToUserName"] = ToUserName
     self.payLoad["Content"] = Content

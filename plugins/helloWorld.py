@@ -10,3 +10,10 @@ class HelloWorld(StandardPlugin):
         x = Send()
         x.sendMsg(f"{data['FromUserName']}","Hello World")
         return "OK"
+
+def hello():
+    print("hi")
+
+def Greeting():
+    hello()
+

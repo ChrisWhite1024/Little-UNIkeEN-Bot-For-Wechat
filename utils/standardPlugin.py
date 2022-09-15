@@ -1,6 +1,5 @@
 from abc import ABC, abstractmethod
 from typing import Union, Tuple, Any
-from utils.basicConfigs import TXT_PERMISSION_DENIED
 
 class StandardPlugin(ABC):
     @staticmethod
