@@ -9,9 +9,10 @@ from flask_socketio import socketio
 from plugins.helloWorld import *
 from utils.standardPlugin import StandardPlugin
 from utils.basicConfigs import *
+from utils.preLoader import *
 
 GroupPluginList = [ # 指定群启用插件
-
+    HelloWorld,
 ]
 
 PrivatePluginList = [ # 私聊启用插件
@@ -43,12 +44,13 @@ def judgeMessage(message):
 
 @sio.event
 def connect():
-    print('connected to server')
+    print('[L] (main.py)SocketIO：WebSocket服务器已连接')
 
 
 @sio.on('OnWeChatMsgs')
 def OnWeChatMsgs(message):
     ''' 监听Wx消息'''
+    print('[L] (main.py)SocketIO：接收到消息事件')
     flag = judgeMessage(message)
     data = message['CurrentPacket']['Data']
     # 群文本消息处理
@@ -61,7 +63,7 @@ def OnWeChatMsgs(message):
                 if ret != None:
                     return ret
     # 私聊文本消息处理
-    elif flag==2:
+    elif flag == 2:
         msg = message['CurrentPacket']['Data']['Content'].strip()
         for event in PrivatePluginList:
             event: StandardPlugin
@@ -69,7 +71,7 @@ def OnWeChatMsgs(message):
                 ret = event.executeEvent(msg, data)
                 if ret != None:
                     return ret
-    print(message)
+    print(f'[L] (main.py)SocketIO：消息事件JSON\n\n{message}\n')
     return "OK"
 
 
@@ -90,8 +92,13 @@ def main():
 
 
 if __name__ == '__main__':
+    '''
     module_spec = importlib.util.spec_from_file_location('helloWorld', PLUGINS_PATH + '/helloWorld.py')
     module = importlib.util.module_from_spec(module_spec)
     module_spec.loader.exec_module(module)
     print(dir(module))
+    PluginList = os.listdir(PLUGINS_PATH)
+    print(PluginList)
+    '''
+    p = PreLoader()
     main()
