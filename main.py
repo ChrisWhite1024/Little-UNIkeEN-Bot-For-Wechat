@@ -77,7 +77,7 @@ def OnWeChatMsgs(message):
 @sio.on('OnWeChatEvents')
 def OnWeChatEvents(message):
     ''' 监听Wx事件 '''
-    print(message)
+    # print(message)
 
 # -----------------------------------------------------
 
