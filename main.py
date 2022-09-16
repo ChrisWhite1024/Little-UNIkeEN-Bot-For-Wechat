@@ -3,20 +3,9 @@
 # python-engineio==3.14.2 
 # python-socketio==4.6.1
 import importlib
+from time import sleep
 from flask_socketio import socketio
-from plugins.helloWorld import *
-from utils.standardPlugin import StandardPlugin
 from utils.preLoader import PreLoader
-from utils.basicConfigs import *
-
-
-GroupPluginList = [ # 指定群启用插件
-    HelloWorld,
-]
-
-PrivatePluginList = [ # 私聊启用插件
-    HelloWorld,
-]
 
 # standard Python
 sio = socketio.Client(logger=False, engineio_logger=False)
@@ -30,8 +19,7 @@ def judgeMessage(message):
         # 收到群消息返回 1
         # 收到私信返回 2
         fromUserName = message['CurrentPacket']['Data']['FromUserName']
-        if fromUserName.endswith('@chatroom') and fromUserName[ : -9] in APPLY_GROUP_ID:
-            return 1
+
         return 2
     return -1
 
@@ -53,23 +41,24 @@ def OnWeChatMsgs(message):
     flag = judgeMessage(message)
     data = message['CurrentPacket']['Data']
     # 群文本消息处理
-    if flag == 1:
-        msg = message['CurrentPacket']['Data']['Content'].strip()
-        for event in GroupPluginList:
-            event: StandardPlugin
-            if event.judgeTrigger(msg, data):
-                ret = event.executeEvent(msg, data)
-                if ret != None:
-                    return ret
+
     # 私聊文本消息处理
-    elif flag == 2:
+    if flag == 2:
         msg = message['CurrentPacket']['Data']['Content'].strip()
+
+        if preLoader.USER_MODULE_LIST['template.py'].Plugin.judgeTrigger(msg, data):
+            preLoader.USER_MODULE_LIST['template.py'].Plugin.executeEvent(msg, data)
+        sleep(3)
+        if preLoader.USER_MODULE_LIST['template1.py'].Plugin.judgeTrigger(msg, data):
+            preLoader.USER_MODULE_LIST['template1.py'].Plugin.executeEvent(msg, data)
+        '''
         for event in PrivatePluginList:
             event: StandardPlugin
             if event.judgeTrigger(msg, data):
                 ret = event.executeEvent(msg, data)
                 if ret != None:
                     return ret
+        '''
     print(f'[L] (main.py)SocketIO：消息事件JSON\n\n{message}\n')
     return "OK"
 

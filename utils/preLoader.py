@@ -223,5 +223,8 @@ class PreLoader():
     def getGlobalConfig(self, key: str):
         return self.__GLOBAL_CONF_RUNTIME[key]
 
-    def isPluginEnabled(self, plugin: str):
+    def isUserPluginEnabled(self, plugin: str):
+        pass
+
+    def isChatRoomPluginEnabled(self):
         pass
