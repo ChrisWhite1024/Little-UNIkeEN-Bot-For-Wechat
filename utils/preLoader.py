@@ -227,5 +227,5 @@ class PreLoader():
     def isUserPluginEnabled(self, plugin: str):
         pass
 
-    def isChatRoomPluginEnabled(self):
+    def isChatRoomPluginEnabled(self, plugin: str, chatroom: str):
         pass
