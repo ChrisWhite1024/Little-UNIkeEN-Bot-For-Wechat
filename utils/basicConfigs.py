@@ -1,9 +1,6 @@
+import json
 from PIL import Image, ImageDraw, ImageFont
 import os
-
-# 基础设置
-SERVER_IP = '43.138.112.209'
-SERVER_PORT = 8081
 
 # Bot设置
 APPLY_GROUP_ID = [ 
@@ -14,8 +11,7 @@ ROOT_ADMIN_WXID = [
     'zhanshen9045',
 ]
 
-TXT_PERMISSION_DENIED = ""
-
+'''
 # 根路径与资源路径
 ROOT_PATH = os.path.dirname(os.path.realpath(__file__))[:-6]
 FONTS_PATH = 'resources/fonts'
@@ -37,3 +33,4 @@ font_hywh_85w_ms = ImageFont.truetype(os.path.join(FONTS_PATH, '汉仪文黑.ttf
 font_hywh_85w_l = ImageFont.truetype(os.path.join(FONTS_PATH, '汉仪文黑.ttf'), 55)
 font_sg_emj = ImageFont.truetype(os.path.join(FONTS_PATH, 'seguiemj.ttf'), 55)
 font_sg_emj_l = ImageFont.truetype(os.path.join(FONTS_PATH, 'seguiemj.ttf'), 75)
+'''

@@ -1,19 +1,27 @@
+from functools import singledispatchmethod
+import requests
 import os
 import json
 import importlib
-from tkinter import E
 
 class PreLoader():
 
     __PLUGINS_PATH = 'plugins'
     __CHATROOM_CONF_PATH = 'configs/ChatRoomConf'  
     __USER_CONF_PATH = 'configs/UserConf'
+    __GLOBAL_CONF_PATH = 'config.json'
+    __GLOBAL_CONF_DEFAULT = {
+        'SERVER_IP' : '',
+        'SERVER_PORT' : '',
+        'WXID' : ''
+    }
     # 存储默认配置文件
     __USER_CONF_DEFAULT = {}
     __CHATROOM_CONF_DEFAULT = {}
     # 存储运行时配置信息
     __USER_CONF_RUNTIME = {}
     __CHATROOM_CONF_RUNTIME = {}
+    __GLOBAL_CONF_RUNTIME = {}
     # 存储插件对象
     CHATROOM_MODULE_LIST = {}
     USER_MODULE_LIST = {}
@@ -83,6 +91,59 @@ class PreLoader():
                         loadedPluginNumber += 1
         print(f'[L] (preLoader.py)PreLoader：插件加载完成，共加载[{loadedPluginNumber}/{totalPluginNumber}]个插件，{totalPluginNumber - loadedPluginNumber - closedPluginNumber}个插件加载失败, {closedPluginNumber}个插件已关闭\n')
 
+        ###########################################################################################################################
+        # 初始化全局配置文件
+        globalConfig = {}
+        if os.path.isfile(self.__GLOBAL_CONF_PATH): # 检验配置文件是否存在
+            try:
+                # 检查JSON合法性
+                with open(self.__GLOBAL_CONF_PATH, 'r') as f1:
+                    globalConfig = json.load(f1)
+                if len(globalConfig) != len(self.__GLOBAL_CONF_DEFAULT):
+                    raise IOError
+                for object in globalConfig.items():
+                    if type(globalConfig[object[0]]) != type(self.__GLOBAL_CONF_DEFAULT[object[0]]):
+                        raise IOError
+                self.__GLOBAL_CONF_RUNTIME = globalConfig
+
+
+                # 检验服务可用性 可移植性差
+                try:
+                    testUrl = "http://{}:{}/v1/LuaApiCaller?funcname=InitWxids&timeout=10&wxid={}".format(self.__GLOBAL_CONF_RUNTIME['SERVER_IP'], self.__GLOBAL_CONF_RUNTIME['SERVER_PORT'], self.__GLOBAL_CONF_RUNTIME['WXID'])
+                    payload = json.dumps({
+                        "CurrentWxcontactSeq": 0,
+                        "CurrentChatRoomContactSeq": 0
+                    })
+                    headers = {
+                        'Content-Type': 'application/json'
+                    }
+                    response = requests.request("POST", testUrl, headers=headers, data=payload)
+                    if response.json().get('ErrMsg', False):
+                        print(f'[E] (preLoader.py)PreLoader：成功连接框架但WXID未登录，程序已退出')
+                        exit()
+                    else:
+                        print(f'[L] (preLoader.py)PreLoader：全局配置文件读取成功')
+                        print(f'[L] (preLoader.py)PreLoader：检查框架连接状态成功')
+
+                except Exception as e:
+                    # print(e)
+                    print(f'[E] (preLoader.py)PreLoader：服务器框架不可用或未填写正确的IP地址与端口号，程序已退出')
+                    exit()
+
+
+            except Exception as e:
+                # print(e)
+                with open(self.__GLOBAL_CONF_PATH, 'w') as f1:
+                    json.dump(self.__GLOBAL_CONF_DEFAULT, f1, indent = 4)
+                    print(f'[E] (preLoader.py)PreLoader：全局配置文件config.json加载失败，已重新生成，填写配置文件并重启程序以继续')
+                    exit()
+        else: # 生成配置文件
+            with open(self.__GLOBAL_CONF_PATH, 'w') as f1:
+                json.dump(self.__GLOBAL_CONF_DEFAULT, f1, indent = 4)
+                print(f'[E] (preLoader.py)PreLoader：全局配置文件config.json不存在，已重新生成，填写配置文件并重启程序以继续')
+                exit()
+
+        ###########################################################################################################################
         # 初始化用户配置文件
         for object in self.USER_MODULE_LIST.items():
             pluginConfig = {}
@@ -100,7 +161,7 @@ class PreLoader():
             self.__CHATROOM_CONF_DEFAULT.setdefault(object[0], pluginConfig)
         
         # 更新用户配置文件
-        print(f'[L] (preLoader.py)PreLoader：开始更新用户配置文件')
+        print(f'[L] (preLoader.py)PreLoader：更新用户配置文件')
         userConfigPath = os.path.join(self.__USER_CONF_PATH, 'config.json')
         try:
             if os.path.isfile(userConfigPath):
@@ -155,25 +216,12 @@ class PreLoader():
                 self.__USER_CONF_RUNTIME = self.__USER_CONF_DEFAULT
             print(f'[E] (preLoader.py)PreLoader：{userConfigPath}读取失败，JSON文件已重置')
         print(f'[L] (preLoader.py)PreLoader：用户配置文件更新成功\n')
-        
-            
 
-        
+        ###########################################################################################################################
+        # 初始化群聊配置文件
+        ###########################################################################################################################
+    def getGlobalConfig(self, key: str):
+        return self.__GLOBAL_CONF_RUNTIME[key]
 
-
-           
-
-        
-
-        
-            
-                        
-
-                
-                
-
-
-                        
-
-
-
+    def isPluginEnabled(self, plugin: str):
+        pass

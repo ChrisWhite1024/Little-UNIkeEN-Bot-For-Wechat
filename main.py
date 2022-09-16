@@ -6,8 +6,9 @@ import importlib
 from flask_socketio import socketio
 from plugins.helloWorld import *
 from utils.standardPlugin import StandardPlugin
+from utils.preLoader import PreLoader
 from utils.basicConfigs import *
-from utils.preLoader import *
+
 
 GroupPluginList = [ # 指定群启用插件
     HelloWorld,
@@ -82,10 +83,10 @@ def OnWeChatEvents(message):
 
 
 def main():
-    sio.connect(f"http://{SERVER_IP}:{SERVER_PORT}", transports=['websocket'])
+    sio.connect("http://{}:{}".format(preLoader.getGlobalConfig('SERVER_IP'), preLoader.getGlobalConfig('SERVER_PORT')), transports=['websocket'])
 
     sio.wait()
-    # Cleanup
+
     sio.disconnect()
 
 
@@ -98,5 +99,5 @@ if __name__ == '__main__':
     PluginList = os.listdir(PLUGINS_PATH)
     print(PluginList)
     '''
-    p = PreLoader()
+    preLoader = PreLoader()
     main()

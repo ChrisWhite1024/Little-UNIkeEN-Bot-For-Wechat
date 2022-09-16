@@ -1,5 +1,5 @@
 from typing import Union, Any
-from utils.basicEvents import *
+from utils.basicEvents import Send
 from utils.standardPlugin import StandardPlugin
 
 '''
@@ -16,8 +16,8 @@ type: 插件适用范围
 PLUGIN_INFO = {
     'name' : '插件模版',
     'version' : '0.0.1',
-    'description' : '除了type外其他键值内容自行决定，用于查看插件用法',
-    'type' : 4,
+    'description' : '除了type外其他键值内容自行决定，用于插件简介的可视化',
+    'type' : 3,
 }
 
 '''
@@ -31,10 +31,13 @@ class Plugin(StandardPlugin):
     def judgeTrigger(msg:str, data:Any) -> bool:
         return msg == "Hello" 
     def executeEvent(msg:str, data:Any) -> Union[None, str]:
-        s = Send()
-        s.sendMsg(f"{data['FromUserName']}","Hello World")
+        Send.sendMsg(f"{data['FromUserName']}","Hello World")
         return "OK"
 
 '''
 utils.basicEvents中的Send类封装了发送各类消息的方法
+Send.sendImage(self, ToUserName, ImagePath) 发送图片,图片地址可以为url和本地地址
+Send.sendMsg(self, ToUserName, Content, AtUsers="") 发送消息,暂时不支持@功能,建议将AtUsers项留空
+Send.sendAppMsg(self, ToUserName, Content) 发送App消息,可以发送小程序链接
+
 '''
