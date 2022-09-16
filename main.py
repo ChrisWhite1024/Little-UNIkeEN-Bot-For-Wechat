@@ -2,16 +2,10 @@
 # Flask-SocketIO==4.3.2
 # python-engineio==3.14.2 
 # python-socketio==4.6.1
-import importlib
-from time import sleep
 from flask_socketio import socketio
 from utils.preLoader import PreLoader
 
-# standard Python
 sio = socketio.Client(logger=False, engineio_logger=False)
-
-# SocketIO Client
-# sio = socketio.AsyncClient(logger=True, engineio_logger=True)
 
 # 筛选事件上报
 def judgeMessage(message):
@@ -48,9 +42,7 @@ def OnWeChatMsgs(message):
 
         if preLoader.USER_MODULE_LIST['template.py'].Plugin.judgeTrigger(msg, data):
             preLoader.USER_MODULE_LIST['template.py'].Plugin.executeEvent(msg, data)
-        sleep(3)
-        if preLoader.USER_MODULE_LIST['template1.py'].Plugin.judgeTrigger(msg, data):
-            preLoader.USER_MODULE_LIST['template1.py'].Plugin.executeEvent(msg, data)
+
         '''
         for event in PrivatePluginList:
             event: StandardPlugin
@@ -80,13 +72,5 @@ def main():
 
 
 if __name__ == '__main__':
-    '''
-    module_spec = importlib.util.spec_from_file_location('helloWorld', PLUGINS_PATH + '/helloWorld.py')
-    module = importlib.util.module_from_spec(module_spec)
-    module_spec.loader.exec_module(module)
-    print(dir(module))
-    PluginList = os.listdir(PLUGINS_PATH)
-    print(PluginList)
-    '''
     preLoader = PreLoader()
     main()

@@ -3,10 +3,5 @@
         "name": "\u63d2\u4ef6\u6a21\u7248",
         "version": "0.0.1",
         "enabled": true
-    },
-    "template1.py": {
-        "name": "\u63d2\u4ef6\u6a21\u7248",
-        "version": "0.0.1",
-        "enabled": true
     }
 }
