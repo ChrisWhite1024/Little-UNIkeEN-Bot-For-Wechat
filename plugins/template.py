@@ -15,7 +15,7 @@ type: 插件适用范围
 
 PLUGIN_INFO = {
     'name' : '插件模版',
-    'version' : '0.0.1',
+    'version' : '0.3.9',
     'description' : '除了type外其他键值内容自行决定，用于插件简介的可视化',
     'type' : 3,
 }
