@@ -7,6 +7,7 @@ import importlib
 class PreLoader():
 
     __PLUGINS_PATH = 'plugins'
+    __CONFIGS_PATH = 'configs'
     __CHATROOM_CONF_PATH = 'configs/ChatRoomConf'  
     __USER_CONF_PATH = 'configs/UserConf'
     __GLOBAL_CONF_PATH = 'config.json'
@@ -37,7 +38,9 @@ class PreLoader():
             os.mkdir(self.__CHATROOM_CONF_PATH)
         if not os.path.exists(self.__USER_CONF_PATH):
             os.mkdir(self.__USER_CONF_PATH)
-
+        if not os.path.exists(self.__CONFIGS_PATH):
+            os.mkdir(self.__CONFIGS_PATH)
+            
         pluginList = os.listdir(self.__PLUGINS_PATH)
         totalPluginNumber = 0
         loadedPluginNumber = 0
