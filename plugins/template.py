@@ -81,9 +81,9 @@ Send.sendVideo(ToUserName, VideoXml) 发送小视频
 '''
 
 '''
-若需要存储数据，请在/data/pluginData目录下以插件名新建插件文件夹
-例如要发送 /data/pluginData/tmp.png图片，则使用方法
-runtime.msgQueue.sendImage(ToUserName, '/data/pluginData/tmp.png') 
+若需要存储数据，请在/data/pluginData目录下新建与插件同名的文件夹，将文件存储在该文件夹下
+例如要发送 /data/pluginData/template/tmp.png图片，则使用方法
+runtime.msgQueue.sendImage(ToUserName, '/data/pluginData/template/tmp.png') 
 '''
 
 """
