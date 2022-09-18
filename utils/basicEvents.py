@@ -9,7 +9,7 @@ class Send():
   __timeout = 10
   __GLOBAL_CONF_PATH = 'config.json'
 
-  # 莫名其妙逻辑就跑通了，未曾设想的道路
+  # 莫名其妙逻辑就跑通了，未曾设想的道路，
   try:
     with open(__GLOBAL_CONF_PATH, 'r') as f:
       globalConfig = json.load(f)

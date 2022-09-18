@@ -1,3 +1,4 @@
+from tkinter import E
 import requests
 import os
 import json
@@ -10,6 +11,8 @@ class PreLoader():
     __USER_CONF_PATH = 'configs/UserConf'
     __GLOBAL_CONF_PATH = 'config.json'
     __GLOBAL_CONF_DEFAULT = {
+        'Version' : '0.3.9',
+        'UpdateLog' : 'WhiteBot最初版本，感谢大家的支持',
         'SERVER_IP' : '',
         'SERVER_PORT' : '',
         'WXID' : ''
@@ -27,6 +30,14 @@ class PreLoader():
 
     def __init__(self) -> None:
         # 加载插件
+
+        if not os.path.exists(self.__PLUGINS_PATH):
+            os.mkdir(self.__PLUGINS_PATH)
+        if not os.path.exists(self.__CHATROOM_CONF_PATH):
+            os.mkdir(self.__CHATROOM_CONF_PATH)
+        if not os.path.exists(self.__USER_CONF_PATH):
+            os.mkdir(self.__USER_CONF_PATH)
+
         pluginList = os.listdir(self.__PLUGINS_PATH)
         totalPluginNumber = 0
         loadedPluginNumber = 0
@@ -116,7 +127,7 @@ class PreLoader():
                     headers = {
                         'Content-Type': 'application/json'
                     }
-                    response = requests.request("POST", testUrl, headers=headers, data=payload)
+                    response = requests.request("POST", testUrl, headers=headers, data=payload, timeout=5)
                     if response.json().get('ErrMsg', False):
                         print(f'[E] (preLoader.py)PreLoader：成功连接框架但WXID未登录，程序已退出')
                         exit()
@@ -126,7 +137,7 @@ class PreLoader():
 
                 except Exception as e:
                     # print(e)
-                    print(f'[E] (preLoader.py)PreLoader：服务器框架不可用或未填写正确的IP地址与端口号，程序已退出')
+                    print(f'[E] (preLoader.py)PreLoader：服务器框架不可用或网络环境差，程序已退出')
                     exit()
 
 
@@ -143,6 +154,7 @@ class PreLoader():
                 exit()
 
         # -------------------------------------------------------------------------------------------------------------------------
+        # ！仍然需要解决配置文件无法及时更新的问题
         # 初始化用户配置文件
         for object in self.USER_MODULE_LIST.items():
             pluginConfig = {}
@@ -150,14 +162,6 @@ class PreLoader():
             pluginConfig.setdefault('version', object[1].PLUGIN_INFO['version'])
             pluginConfig.setdefault('enabled', True)
             self.__USER_CONF_DEFAULT.setdefault(object[0], pluginConfig)
-
-        # 初始化群聊配置文件
-        for object in self.CHATROOM_MODULE_LIST.items():
-            pluginConfig = {}
-            pluginConfig.setdefault('name', object[1].PLUGIN_INFO['name'])
-            pluginConfig.setdefault('version', object[1].PLUGIN_INFO['version'])
-            pluginConfig.setdefault('enabled', True)
-            self.__CHATROOM_CONF_DEFAULT.setdefault(object[0], pluginConfig)
         
         # 更新用户配置文件
         print(f'[L] (preLoader.py)PreLoader：更新用户配置文件')
@@ -186,46 +190,122 @@ class PreLoader():
                                 break
                         with open(userConfigPath, 'w') as f2:
                             json.dump(userConfig, f2, indent = 4)
-                            self.__USER_CONF_RUNTIME = userConfig
                             print(f'[L] (preLoader.py)PreLoader：写入{userConfigPath}文件成功')
                 # 删除不存在的插件配置
                 deleteKey = []
                 for value in userConfig.items():
-                    if self.__CHATROOM_CONF_DEFAULT.get(value[0], False):
-                        pass
+                    if self.__USER_CONF_DEFAULT.get(value[0], False):
+                        for attribute in self.__USER_CONF_DEFAULT[value[0]]:
+                            if attribute == 'enabled':
+                                pass
+                            else:
+                                if userConfig[value[0]][attribute] != self.__USER_CONF_DEFAULT[value[0]][attribute]:
+                                    userConfig[value[0]][attribute] = self.__USER_CONF_DEFAULT[value[0]][attribute]
+                                    with open(userConfigPath, 'w') as f2:
+                                        json.dump(userConfig, f2, indent = 4)            
                     else:
                         deleteKey.append(value[0]) 
                 for key in deleteKey:
                     userConfig.pop(key)
                     with open(userConfigPath, 'w') as f2:
                         json.dump(userConfig, f2, indent = 4)
-                        self.__USER_CONF_RUNTIME = userConfig
                     print(f'[L] (preLoader.py)PreLoader：适用于用户的插件{key}未加载，已从{userConfigPath}中移除')
+                self.__USER_CONF_RUNTIME = userConfig
             # 路径下找不到文件时执行
             else:
                 with open(userConfigPath, 'w') as f3:
                     json.dump(self.__USER_CONF_DEFAULT, f3, indent = 4)
-                    self.__USER_CONF_RUNTIME = self.__USER_CONF_DEFAULT
                     print(f'[L] (preLoader.py)PreLoader：成功建立{userConfigPath}文件')
+                self.__USER_CONF_RUNTIME = self.__USER_CONF_DEFAULT
         # 无法读取JSON时执行
         except Exception as e:
             # print(e)
             with open(userConfigPath, 'w') as f4:
                 json.dump(self.__USER_CONF_DEFAULT, f4, indent = 4)
-                self.__USER_CONF_RUNTIME = self.__USER_CONF_DEFAULT
             print(f'[E] (preLoader.py)PreLoader：{userConfigPath}读取失败，JSON文件已重置')
+            self.__USER_CONF_RUNTIME = self.__USER_CONF_DEFAULT
+
+        
         print(f'[L] (preLoader.py)PreLoader：用户配置文件更新成功\n')
 
         # -------------------------------------------------------------------------------------------------------------------------
         # 初始化群聊配置文件
+        for object in self.CHATROOM_MODULE_LIST.items():
+            pluginConfig = {}
+            pluginConfig.setdefault('name', object[1].PLUGIN_INFO['name'])
+            pluginConfig.setdefault('version', object[1].PLUGIN_INFO['version'])
+            pluginConfig.setdefault('enabled', False)
+            self.__CHATROOM_CONF_DEFAULT.setdefault(object[0], pluginConfig)
+
         
+        print(f'[L] (preLoader.py)PreLoader：更新群聊配置文件')
+        for chatroomDir in os.listdir(self.__CHATROOM_CONF_PATH):
+            if (os.path.isdir(os.path.join(self.__CHATROOM_CONF_PATH, chatroomDir))):
+                chatroomConfigPath = os.path.join(self.__CHATROOM_CONF_PATH, chatroomDir, 'config.json')
+                if os.path.isfile(chatroomConfigPath):
+                    try:
+                        with open(chatroomConfigPath, 'r') as f:
+                            chatroomConfig = json.load(f) 
+                        for value in self.__CHATROOM_CONF_DEFAULT:
+                            if chatroomConfig.get(value, False):
+                                pass
+                            else:
+                                chatroomConfig.setdefault(value, self.__CHATROOM_CONF_DEFAULT[value])
+                                with open(chatroomConfigPath, 'w') as f2:
+                                    json.dump(chatroomConfig, f2, indent = 4)
+                                print(f'[L] (preLoader.py)PreLoader：检测到适用于群聊的新插件，写入{chatroomConfigPath}文件成功，插键已默认关闭')
+                        # 删除不存在的插件配置
+                        deleteKey = []
+                        for value in chatroomConfig:
+                            #更新插件变更
+                            if self.__CHATROOM_CONF_DEFAULT.get(value, False):
+                                for attribute in self.__CHATROOM_CONF_DEFAULT[value]:
+                                    if attribute == 'enabled':
+                                        pass
+                                    else:
+                                        if chatroomConfig[value][attribute] != self.__CHATROOM_CONF_DEFAULT[value][attribute]:
+                                            chatroomConfig[value][attribute] = self.__CHATROOM_CONF_DEFAULT[value][attribute]
+                                            with open(chatroomConfigPath, 'w') as f2:
+                                                    json.dump(chatroomConfig, f2, indent = 4) 
+                            else:
+                                deleteKey.append(value) 
+                        for key in deleteKey:
+                            chatroomConfig.pop(key)
+                            with open(chatroomConfigPath, 'w') as f2:
+                                json.dump(chatroomConfig, f2, indent = 4)
+                            print(f'[L] (preLoader.py)PreLoader：适用于群聊的插件{key}未加载，已从{chatroomConfigPath}中移除')
+                        
+                        self.__CHATROOM_CONF_RUNTIME[chatroomDir] = chatroomConfig
+                        
+                    except:
+                        with open(chatroomConfigPath, 'w') as f4:
+                            json.dump(self.__CHATROOM_CONF_DEFAULT, f4, indent = 4)
+                        self.__CHATROOM_CONF_RUNTIME.setdefault(chatroomDir, self.__CHATROOM_CONF_DEFAULT)
+                        print(f'[E] (preLoader.py)PreLoader：{chatroomConfigPath}读取失败，JSON文件已重置')
+        print(f'[L] (preLoader.py)PreLoader：更新群聊配置文件成功')        
         # -------------------------------------------------------------------------------------------------------------------------
 
     def getGlobalConfig(self, key: str):
         return self.__GLOBAL_CONF_RUNTIME[key]
 
     def isUserPluginEnabled(self, plugin: str):
-        pass
-
+        if self.__USER_CONF_RUNTIME.get(plugin, False):
+            return self.__USER_CONF_RUNTIME[plugin]['enabled']
+        else:
+            print(f'[E] (preLoader.py)PreLoader：内部错误，不存在的用户插件，程序已退出') 
+            exit()
+    # 检验群聊插件是否开启，若为新群聊则更新RUNTIME与配置文件
     def isChatRoomPluginEnabled(self, plugin: str, chatroom: str):
-        pass
+        if self.__CHATROOM_CONF_RUNTIME.get(chatroom, False):
+            if self.__CHATROOM_CONF_RUNTIME[chatroom].get(plugin, False):
+                return self.__CHATROOM_CONF_RUNTIME[chatroom][plugin]['enabled']
+            else:
+                print(f'[E] (preLoader.py)PreLoader：内部错误，不存在的用户插件，程序已退出') 
+                exit()
+        else:
+            print(f'[L] (preLoader.py)PreLoader：检测到新群聊消息，已生成群聊配置文件，插键已默认关闭，若想开启请修改配置文件并重启WhiteBot')
+            os.mkdir(os.path.join(self.__CHATROOM_CONF_PATH, chatroom))
+            with open(os.path.join(self.__CHATROOM_CONF_PATH, chatroom, 'config.json'), 'w') as f4:
+                json.dump(self.__CHATROOM_CONF_DEFAULT, f4, indent = 4)
+            self.__CHATROOM_CONF_RUNTIME[chatroom] = self.__CHATROOM_CONF_DEFAULT
+            return False

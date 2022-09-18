@@ -1,6 +1,7 @@
 from typing import Union, Any
-from utils.basicEvents import Send
+from utils.runtime import Runtime
 from utils.standardPlugin import StandardPlugin
+# from utils.basicEvents import Send 
 
 '''
 1. 插件中必须有一个继承自'StandardPlugin'的'Plugin'类
@@ -53,11 +54,22 @@ Example.
 class Plugin(StandardPlugin):
     def judgeTrigger(msg:str, data:Any) -> bool:
         return msg == "Suki" 
-    def executeEvent(msg:str, data:Any) -> Union[None, str]:
-        Send.sendMsg(f"{data['FromUserName']}","DaiSuki")
+    def executeEvent(msg:str, data:Any, runtime: Runtime) -> Union[None, str]:
+        #Send.sendMsg(f"{data['FromUserName']}","DaiSuki")
+        runtime.msgQueue.sendMsg(f"{data['FromUserName']}","DaiSuki")
         return "OK"
 
 '''
+! Send类是危险的，频繁请求可能会导致风控，runtime中的msgQueue类是对Send类的再封装，对请求间隔时间进行了控制，建议使用
+
+runtime.msgQueue.sendImage(ToUserName, ImagePath) 发送图片,图片地址可以为url和本地地址
+runtime.msgQueue.sendMsg(ToUserName, Content, AtUsers="") 发送消息,暂时不支持@功能,建议将AtUsers项留空
+runtime.msgQueue.sendAppMsg(ToUserName, Content) 发送App消息,可以发送小程序链接
+runtime.msgQueue.sendVoice(ToUserName, VoicePath) 发送语音消息,注意微信语音消息为silk格式
+runtime.msgQueue.sendEmoji(ToUserName, EmojiMd5, EmojiLen) 发送MD5表情
+runtime.msgQueue.sendCdnImage(ToUserName, XmlStr) 发送CDN图片
+runtime.msgQueue.sendVideo(ToUserName, VideoXml) 发送小视频
+
 utils.basicEvents中的Send类封装了发送各类消息的方法
 Send.sendImage(ToUserName, ImagePath) 发送图片,图片地址可以为url和本地地址
 Send.sendMsg(ToUserName, Content, AtUsers="") 发送消息,暂时不支持@功能,建议将AtUsers项留空
@@ -67,3 +79,13 @@ Send.sendEmoji(ToUserName, EmojiMd5, EmojiLen) 发送MD5表情
 Send.sendCdnImage(ToUserName, XmlStr) 发送CDN图片
 Send.sendVideo(ToUserName, VideoXml) 发送小视频
 '''
+
+'''
+若需要存储数据，请在/data/pluginData目录下以插件名新建插件文件夹
+例如要发送 /data/pluginData/tmp.png图片，则使用方法
+runtime.msgQueue.sendImage(ToUserName, '/data/pluginData/tmp.png') 
+'''
+
+"""
+若要添加定时任务，请使用threading模块的Timer组件
+"""

@@ -2,8 +2,11 @@
 # Flask-SocketIO==4.3.2
 # python-engineio==3.14.2 
 # python-socketio==4.6.1
+from concurrent.futures import thread
+import threading
 from flask_socketio import socketio
-from utils.preLoader import PreLoader
+from utils.runtime import PreLoader
+from utils.runtime import Runtime
 
 sio = socketio.Client(logger=False, engineio_logger=False)
 
@@ -13,7 +16,8 @@ def judgeMessage(message):
         # 收到群消息返回 1
         # 收到私信返回 2
         fromUserName = message['CurrentPacket']['Data']['FromUserName']
-
+        if fromUserName[-9:] == '@chatroom':
+            return 1
         return 2
     return -1
 
@@ -25,7 +29,7 @@ def judgeMessage(message):
 
 @sio.event
 def connect():
-    print('[L] (main.py)SocketIO：WebSocket服务器已连接')
+    print('[L] (main.py)SocketIO：WebSocket服务端已连接')
 
 
 @sio.on('OnWeChatMsgs')
@@ -35,36 +39,33 @@ def OnWeChatMsgs(message):
     flag = judgeMessage(message)
     data = message['CurrentPacket']['Data']
     # 群文本消息处理
-
+    if flag == 1:
+        msg = message['CurrentPacket']['Data']['Content'].strip()
+        for module in runtime.preLoader.CHATROOM_MODULE_LIST:
+            if runtime.preLoader.isChatRoomPluginEnabled(module, data['FromUserName']):
+                if runtime.preLoader.CHATROOM_MODULE_LIST[module].Plugin.judgeTrigger(msg, data):
+                    threading.Thread(target=runtime.preLoader.CHATROOM_MODULE_LIST[module].Plugin.executeEvent, args=(msg, data, runtime), daemon=True).start()
     # 私聊文本消息处理
     if flag == 2:
         msg = message['CurrentPacket']['Data']['Content'].strip()
-
-        if preLoader.USER_MODULE_LIST['template.py'].Plugin.judgeTrigger(msg, data):
-            preLoader.USER_MODULE_LIST['template.py'].Plugin.executeEvent(msg, data)
-
-        '''
-        for event in PrivatePluginList:
-            event: StandardPlugin
-            if event.judgeTrigger(msg, data):
-                ret = event.executeEvent(msg, data)
-                if ret != None:
-                    return ret
-        '''
-    print(f'[L] (main.py)SocketIO：消息事件JSON\n\n{message}\n')
+        for module in runtime.preLoader.USER_MODULE_LIST:
+            if runtime.preLoader.isUserPluginEnabled(module):
+                if runtime.preLoader.USER_MODULE_LIST[module].Plugin.judgeTrigger(msg, data):
+                    threading.Thread(target=runtime.preLoader.USER_MODULE_LIST[module].Plugin.executeEvent, args=(msg, data, runtime), daemon=True).start()
+    # print(f'[L] (main.py)SocketIO：消息事件JSON\n\n{message}\n')
     return "OK"
 
 
 @sio.on('OnWeChatEvents')
 def OnWeChatEvents(message):
     ''' 监听Wx事件 '''
-    # print(message)
+    print(message)
 
 # -----------------------------------------------------
 
 
 def main():
-    sio.connect("http://{}:{}".format(preLoader.getGlobalConfig('SERVER_IP'), preLoader.getGlobalConfig('SERVER_PORT')), transports=['websocket'])
+    sio.connect("http://{}:{}".format(runtime.preLoader.getGlobalConfig('SERVER_IP'), runtime.preLoader.getGlobalConfig('SERVER_PORT')), transports=['websocket'])
 
     sio.wait()
 
@@ -72,5 +73,6 @@ def main():
 
 
 if __name__ == '__main__':
-    preLoader = PreLoader()
+    runtime = Runtime()
+    #preLoader = PreLoader()
     main()
