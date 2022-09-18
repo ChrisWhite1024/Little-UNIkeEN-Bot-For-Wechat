@@ -31,7 +31,8 @@ class PreLoader():
 
     def __init__(self) -> None:
         # 加载插件
-
+        if not os.path.exists('configs'):
+            os.mkdir('configs') 
         if not os.path.exists(self.__PLUGINS_PATH):
             os.mkdir(self.__PLUGINS_PATH)
         if not os.path.exists(self.__CHATROOM_CONF_PATH):
@@ -141,7 +142,7 @@ class PreLoader():
 
                 except Exception as e:
                     # print(e)
-                    print(f'[E] (preLoader.py)PreLoader：服务器框架不可用或网络环境差，程序已退出')
+                    print(f'[E] (preLoader.py)PreLoader：连接失败，可能是服务器框架不可用、网络环境差或服务器地址填写错误，程序已退出')
                     exit()
 
 
