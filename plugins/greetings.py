@@ -83,7 +83,7 @@ GOODNIGHT_LIST = [
 class Plugin(StandardPlugin):
     def judgeTrigger(msg:str, data:Any) -> bool:
         return msg == "早安" or msg == "晚安" 
-    def executeEvent(msg:str, data:Any, runtime: Runtime) -> Union[None, str]:
+    def executeEvent(msg:str, data:Any, runtime:Runtime) -> Union[None, str]:
         if msg == "早安":
             runtime.msgQueue.sendMsg(f"{data['FromUserName']}", random.choice(GOODMORNING_LIST))
         if msg == "晚安":

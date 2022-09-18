@@ -54,7 +54,7 @@ Example.
 class Plugin(StandardPlugin):
     def judgeTrigger(msg:str, data:Any) -> bool:
         return msg == "Suki" 
-    def executeEvent(msg:str, data:Any, runtime: Runtime) -> Union[None, str]:
+    def executeEvent(msg:str, data:Any, runtime:Runtime) -> Union[None, str]:
         #Send.sendMsg(f"{data['FromUserName']}","DaiSuki")
         runtime.msgQueue.sendMsg(f"{data['FromUserName']}","DaiSuki")
         return "OK"
