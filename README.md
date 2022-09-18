@@ -5,7 +5,7 @@ WhiteBot是配合 [RSTBot](https://babyqdoc.gitbook.io/wechatdocs/) 使用的Wx�
 ## 如何使用
 1. 配置好[RSTBot前置框架](https://babyqdoc.gitbook.io/wechatdocs/da-jian-huan-jing-zhi-nan-bi-du)
 2. 在根目录config.json中填入RSTBot WebScocket服务端IP和端口以及登录的WXID
-3. 配置python环境，安装依赖库
+3. 根据requirements.txt配置python环境，安装依赖库
 4. 在根目录下执行 python main.py
 
 ## 配置文件
