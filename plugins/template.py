@@ -18,7 +18,8 @@ PLUGIN_INFO = {
     'name' : '插件模版',
     'version' : '0.3.9',
     'description' : '除了type外其他键值内容自行决定，用于插件简介的可视化',
-    'type' : 3,
+    'author' : '作者写在这里',
+    'type' : 4,
 }
 
 '''

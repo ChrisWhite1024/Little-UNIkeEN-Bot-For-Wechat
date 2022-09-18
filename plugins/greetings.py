@@ -7,6 +7,7 @@ PLUGIN_INFO = {
     'name' : '早安&晚安',
     'version' : '0.3.9',
     'description' : '除了type外其他键值内容自行决定，用于插件简介的可视化',
+    'author' : 'UNIkeEN',
     'type' : 3,
 }
 

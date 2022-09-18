@@ -7,6 +7,7 @@ PLUGIN_INFO = {
     'name' : '来点图图',
     'version' : '0.0.1',
     'description' : '来点图图',
+    'author' : 'UNIkeEN',
     'type' : 3,
 }
 

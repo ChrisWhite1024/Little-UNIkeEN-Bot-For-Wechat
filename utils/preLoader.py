@@ -70,12 +70,13 @@ class PreLoader():
                         module.PLUGIN_INFO['name']
                         module.PLUGIN_INFO['version']
                         module.PLUGIN_INFO['description']
+                        module.PLUGIN_INFO['author']
                         module.PLUGIN_INFO['type']
                     except:
                         print(f'[W] (preLoader.py)PreLoader：{file}插件未加载，PLUGIN_INFO键错误')
                         isLegal = False
                     try:
-                        if type(module.PLUGIN_INFO['name']) != str or type(module.PLUGIN_INFO['description']) != str or type(module.PLUGIN_INFO['version']) != str:
+                        if type(module.PLUGIN_INFO['name']) != str or type(module.PLUGIN_INFO['description']) != str or type(module.PLUGIN_INFO['version']) != str or type(module.PLUGIN_INFO['author']) != str:
                            isLegal = False 
                            print(f'[W] (preLoader.py)PreLoader：{file}插件加载失败，PLUGIN_INFO值类型错误')
                         if type(module.PLUGIN_INFO['type']) != int or module.PLUGIN_INFO['name'] > 4 or module.PLUGIN_INFO['name'] < 1:
@@ -163,6 +164,7 @@ class PreLoader():
             pluginConfig = {}
             pluginConfig.setdefault('name', object[1].PLUGIN_INFO['name'])
             pluginConfig.setdefault('version', object[1].PLUGIN_INFO['version'])
+            pluginConfig.setdefault('author', object[1].PLUGIN_INFO['author'])
             pluginConfig.setdefault('enabled', True)
             self.__USER_CONF_DEFAULT.setdefault(object[0], pluginConfig)
         
@@ -237,6 +239,7 @@ class PreLoader():
             pluginConfig = {}
             pluginConfig.setdefault('name', object[1].PLUGIN_INFO['name'])
             pluginConfig.setdefault('version', object[1].PLUGIN_INFO['version'])
+            pluginConfig.setdefault('author', object[1].PLUGIN_INFO['author'])
             pluginConfig.setdefault('enabled', False)
             self.__CHATROOM_CONF_DEFAULT.setdefault(object[0], pluginConfig)
 
