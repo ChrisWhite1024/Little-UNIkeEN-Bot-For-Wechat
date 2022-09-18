@@ -11,3 +11,6 @@ WhiteBot是配合 [RSTBot](https://babyqdoc.gitbook.io/wechatdocs/) 使用的Wx�
 ## 配置文件
 1. /configs/ChatRoomConf 中存储了单独群聊的配置文件，可以单独控制各群插件的开关，未生成配置文件的群在启动后会进行初始化，插件默认关闭需要手动开启
 2. /configs/UserConf 中储存了适用于全局用户的配置文件，若不存在启动时也会初始化
+
+## 编写插件
+WhiteBot基于插件来实现全部逻辑，插件的编写规范请参照 /plugins/template.py
