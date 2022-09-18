@@ -1,4 +1,5 @@
 import queue
+import random
 import threading
 from time import sleep
 from utils.basicEvents import Send
@@ -40,9 +41,9 @@ class MsgQueue():
                     func = bufferQueue.get()
                     func()
                     if userNameFirst == userNameSecond:
-                        sleep(3)
+                        sleep(random.uniform(2, 5))
                     else:
-                        sleep(5)
+                        sleep(random.uniform(4, 7))
                     userNameExecuted = userNameFirst
                     userNameFirst = userNameSecond
                     userNameSecond = ''
