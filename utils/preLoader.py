@@ -1,4 +1,3 @@
-from tkinter import E
 import requests
 import os
 import json
@@ -260,7 +259,7 @@ class PreLoader():
                                 chatroomConfig.setdefault(value, self.__CHATROOM_CONF_DEFAULT[value])
                                 with open(chatroomConfigPath, 'w') as f2:
                                     json.dump(chatroomConfig, f2, indent = 4)
-                                print(f'[L] (preLoader.py)PreLoader：检测到适用于群聊的新插件，写入{chatroomConfigPath}文件成功，插键已默认关闭')
+                                print(f'[L] (preLoader.py)PreLoader：检测到适用于群聊的新插件，写入{chatroomConfigPath}文件成功，插件已默认关闭')
                         # 删除不存在的插件配置
                         deleteKey = []
                         for value in chatroomConfig:

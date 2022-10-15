@@ -1,6 +1,7 @@
 from typing import Union, Any
 from utils.runtime import Runtime
 from utils.standardPlugin import StandardPlugin
+from utils.responseImage import *
 # from utils.basicEvents import Send 
 
 '''
@@ -89,4 +90,11 @@ runtime.msgQueue.sendImage(ToUserName, '/data/pluginData/template/tmp.png')
 
 """
 若要添加定时任务，请使用threading模块的Timer组件
+"""
+
+"""
+响应卡片绘制 
+部分功能场景下，Bot的回答包含较多文字和插图（如"每日新闻"，"功能列表"），为避免发送大量文字的风控风险、美化回复信息的展示形式，
+可以将这些内容转化为一张图片发送。Little-UNIkeEN-Bot 基于 pillow 封装了 responseImage 库，方便开发者快速构建此类图片。WhiteBot移植了该功能
+https://unikeen.github.io/Little-UNIkeEN-Bot/api/draw-card/
 """

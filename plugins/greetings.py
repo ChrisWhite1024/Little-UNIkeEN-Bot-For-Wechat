@@ -1,12 +1,19 @@
+import os
+import time
+import av
+import pilk
+import requests
 import random
+import librosa
+import soundfile as sf
 from typing import Union, Any
 from utils.runtime import Runtime
 from utils.standardPlugin import StandardPlugin
 
 PLUGIN_INFO = {
     'name' : '早安&晚安',
-    'version' : '0.3.9',
-    'description' : '除了type外其他键值内容自行决定，用于插件简介的可视化',
+    'version' : '0.4.0',
+    'description' : '想要听胡桃说早安/晚安吗\n发送 [早安] [晚安] 试试吧\nPS:因API问题语音功能暂时下线',
     'author' : 'UNIkeEN',
     'type' : 3,
 }
@@ -25,7 +32,7 @@ GOODMORNING_LIST = [
     "一个人至少应该拥有一个梦想，有一个理由去坚强，心若没有栖息的地方，在哪里都是流浪。早安！",
     "一万个美丽的未来，抵不上一个温暖的现在。早安！",
     "愿你成为自己喜欢的样子，不抱怨，不将就，有野心，有光芒！早安！",
-    "无论生活怎样，都不要忘记微笑，愿你成为自己的太阳，无需凭借谁的光~",
+    "无论生活怎样，都不要忘记微笑，愿你成为自己的太阳，无需凭借谁的光。",
     "不管昨天有多糟糕，不要让它影响你的现在和未来，活得像向日葵一样灿烂。早上好！",
     "天是冷的，心是暖的，对你的祝福是永远的！人是远的，心是近的，对你的思念是不变的！愿你每一天都阳光灿烂、笑口常开，早安！",
     "抱最大希望，尽最大努力，做最坏打算，持最好心态。记住该记住的，忘记该忘记的，改变能改变的，接受成事实的。太阳总是新的，每天都是美好的日子。早安！",
@@ -56,7 +63,7 @@ GOODNIGHT_LIST = [
     "今天的世界已经打烊了，已经不对外营业了，晚安！",
     "愿你从此不对新事畏惧，不会重蹈覆辙，再也不为感情沉沦，不为熬夜后悔，相信有人会陪你颠沛流离，如果没有，愿你成为自己的太阳。晚安，好梦！",
     "错过落日余晖，还会有满天星辰，只要不放弃，最差就是大器晚成。愿你全力以赴，且满载而归！晚安！",
-    "最好的年龄是，那一天，你终于知道并且坚信自己有多好，不是虚张，不是夸浮，不是众人捧，是内心明明澈澈知道：是的，我就是这么好。晚安~",
+    "最好的年龄是，那一天，你终于知道并且坚信自己有多好，不是虚张，不是夸浮，不是众人捧，是内心明明澈澈知道：是的，我就是这么好。晚安！",
     "夜深人静了就把心掏出来自己缝缝补补，完事了再塞回去，睡一觉醒来又是信心百倍。晚安！",
     "所有的故事，都有一个结局。但幸运的是，在生活中，每个结局都会变成一个新的开始。晚安!",
     "难过的时候，就把自己当成另一个人，当初怎么安慰别人，现在就怎么安慰自己。晚安！",
@@ -65,7 +72,7 @@ GOODNIGHT_LIST = [
     "原来以为，拥有的东西越多，才会越幸福，后来才发现，生活越简单，才会更轻松。晚安好梦。",
     "星星会不会趁着人间的烟火坠落时，偷偷溜下来见想见的人。晚安！",
     "今夜太晚了，明天继续想你，等星星都睡着了，再说想你。",
-    """我对世界说晚安，唯独对你说喜欢！爱你（づ￣3￣）づ╭❤～""",
+    """我对世界说晚安，唯独对你说喜欢！爱你！""",
     "好想抱抱你呀~只是因为心疼你，觉得你该休息了，然后在你措不及防的时候拥你入怀，揉揉你的头发告诉你：已经够了，你很努力了可以好好休息了",
     "晚安，换个世界想你，一会儿见。",
     "今天月亮不营业，所以由我来说晚安。",
@@ -85,8 +92,78 @@ class Plugin(StandardPlugin):
     def judgeTrigger(msg:str, data:Any) -> bool:
         return msg == "早安" or msg == "晚安" 
     def executeEvent(msg:str, data:Any, runtime:Runtime) -> Union[None, str]:
+        # 删除过多的音频文件
+        fileList = os.listdir('data/pluginData/greetings')
+        if len(fileList) > 15:
+            for file in fileList:
+                os.remove(os.path.join('data/pluginData/greetings', file))
+                
+        ran = random.randint(1, 10)
         if msg == "早安":
-            runtime.msgQueue.sendMsg(f"{data['FromUserName']}", random.choice(GOODMORNING_LIST))
+            sentence = random.choice(GOODMORNING_LIST)
+            runtime.msgQueue.sendMsg(f"{data['FromUserName']}", sentence)
+            """
+            if ran > 4:
+                runtime.msgQueue.sendMsg(f"{data['FromUserName']}", sentence)
+            else:
+                silk_path = send_genshin_voice(sentence)
+                runtime.msgQueue.sendVoice(f"{data['FromUserName']}", silk_path)
+            """
         if msg == "晚安":
-            runtime.msgQueue.sendMsg(f"{data['FromUserName']}", random.choice(GOODNIGHT_LIST))
+            sentence = random.choice(GOODNIGHT_LIST)
+            runtime.msgQueue.sendMsg(f"{data['FromUserName']}", sentence)
+            """
+            if ran > 4:
+                runtime.msgQueue.sendMsg(f"{data['FromUserName']}", sentence)
+            else:
+                silk_path = send_genshin_voice(sentence)
+                runtime.msgQueue.sendVoice(f"{data['FromUserName']}", silk_path)
+            """
         return "OK"
+
+
+def send_genshin_voice(sentence):
+    timeNow = time.time()
+    speaker = '胡桃'
+    response = requests.get(f"http://233366.proxy.nscc-gz.cn:8888/?text={sentence}&speaker={speaker}&length_factor=0.5&noise=0.4&format=wav")
+    file_path = "data/pluginData/greetings/{}.wav".format(timeNow)
+    silk_path = "data/pluginData/greetings/c{}.silk".format(timeNow)
+    convert_path = "data/pluginData/greetings/c{}.wav".format(timeNow) # 重采样文件地址
+    with open(file_path, "wb") as code:
+        code.write(response.content)
+    audio, sr = librosa.load(file_path, sr=None)
+    audio_24k = librosa.resample(audio, orig_sr=22050, target_sr=24000)
+    sf.write(convert_path, audio_24k, 24000)
+    convert_to_silk(convert_path)
+    return silk_path
+
+
+def to_pcm(in_path: str) -> tuple[str, int]:
+    """任意媒体文件转 pcm"""
+    out_path = os.path.splitext(in_path)[0] + '.pcm'
+    with av.open(in_path) as in_container:
+        in_stream = in_container.streams.audio[0]
+        sample_rate = in_stream.codec_context.sample_rate
+        with av.open(out_path, 'w', 's16le') as out_container:
+            out_stream = out_container.add_stream(
+                'pcm_s16le',
+                rate=sample_rate,
+                layout='mono'
+            )
+            try:
+               for frame in in_container.decode(in_stream):
+                  frame.pts = None
+                  for packet in out_stream.encode(frame):
+                     out_container.mux(packet)
+            except:
+               pass
+    return out_path, sample_rate
+
+
+def convert_to_silk(media_path: str) -> str:
+    """任意媒体文件转 silk, 返回silk路径"""
+    pcm_path, sample_rate = to_pcm(media_path)
+    silk_path = os.path.splitext(pcm_path)[0] + '.silk'
+    pilk.encode(pcm_path, silk_path, pcm_rate=sample_rate, tencent=True)
+    os.remove(pcm_path)
+    return silk_path

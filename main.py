@@ -21,6 +21,13 @@ def judgeMessage(message):
         return 2
     return -1
 
+def judgeEvent(message):
+    fromUserName = message['CurrentPacket']['Data'].get("FromUserName", False)
+    if not fromUserName:
+        return -1
+    if fromUserName[-9:] == '@chatroom':
+        return 1
+    return 2
 
 # -----------------------------------------------------
 # Socketio
@@ -29,6 +36,8 @@ def judgeMessage(message):
 
 @sio.event
 def connect():
+    for module in runtime.preLoader.CHATROOM_MODULE_LIST:
+        runtime.preLoader.CHATROOM_MODULE_LIST[module].Plugin.scheduleEvent(runtime)
     print('[L] (main.py)SocketIO：WebSocket服务端已连接')
 
 
@@ -52,14 +61,29 @@ def OnWeChatMsgs(message):
             if runtime.preLoader.isUserPluginEnabled(module):
                 if runtime.preLoader.USER_MODULE_LIST[module].Plugin.judgeTrigger(msg, data):
                     threading.Thread(target=runtime.preLoader.USER_MODULE_LIST[module].Plugin.executeEvent, args=(msg, data, runtime), daemon=True).start()
-    # print(f'[L] (main.py)SocketIO：消息事件JSON\n\n{message}\n')
+    print(f'[L] (main.py)SocketIO：消息JSON\n\n{message}\n')
     return "OK"
 
 
 @sio.on('OnWeChatEvents')
 def OnWeChatEvents(message):
     ''' 监听Wx事件 '''
-    print(message)
+    flag = judgeEvent(message)
+    data = message['CurrentPacket']['Data']
+    msg = ""
+    # 群文本消息处理
+    if flag == 1:
+        for module in runtime.preLoader.CHATROOM_MODULE_LIST:
+            if runtime.preLoader.isChatRoomPluginEnabled(module, data['FromUserName']):
+                if runtime.preLoader.CHATROOM_MODULE_LIST[module].Plugin.judgeTrigger(msg, data):
+                    threading.Thread(target=runtime.preLoader.CHATROOM_MODULE_LIST[module].Plugin.executeEvent, args=(msg, data, runtime), daemon=True).start()
+    # 私聊文本消息处理
+    if flag == 2:
+        for module in runtime.preLoader.USER_MODULE_LIST:
+            if runtime.preLoader.isUserPluginEnabled(module):
+                if runtime.preLoader.USER_MODULE_LIST[module].Plugin.judgeTrigger(msg, data):
+                    threading.Thread(target=runtime.preLoader.USER_MODULE_LIST[module].Plugin.executeEvent, args=(msg, data, runtime), daemon=True).start()
+    print(f'[L] (main.py)SocketIO：事件JSON\n\n{message}\n')
 
 # -----------------------------------------------------
 

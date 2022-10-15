@@ -15,3 +15,8 @@ class StandardPlugin(ABC):
     def executeEvent(msg:str, data:Any, runtime:Runtime) -> Union[None, str]:
         """
         """
+    @staticmethod
+    @abstractmethod
+    def scheduleEvent(runtime:Runtime) -> Union[None, str]:
+        """
+        """
