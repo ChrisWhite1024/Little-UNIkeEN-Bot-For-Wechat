@@ -40,70 +40,6 @@ class PreLoader():
             os.mkdir(self.__USER_CONF_PATH)
         if not os.path.exists(self.__CONFIGS_PATH):
             os.mkdir(self.__CONFIGS_PATH)
-            
-        pluginList = os.listdir(self.__PLUGINS_PATH)
-        totalPluginNumber = 0
-        loadedPluginNumber = 0
-        closedPluginNumber = 0
-        for file in pluginList:
-            if file[-3:] == '.py':
-                totalPluginNumber += 1
-
-                module_spec = importlib.util.spec_from_file_location(f'{file[:-3]}', os.path.join(self.__PLUGINS_PATH, file))
-                module = importlib.util.module_from_spec(module_spec)
-                module_spec.loader.exec_module(module)
-
-                # 插件合法性判断
-                isLegal = True
-                if dir(module).count('Plugin') == 0:
-                    isLegal = False
-                    print(f'[W] (preLoader.py)PreLoader：{file}插件未加载，缺少Plugin类')
-                if dir(module).count('PLUGIN_INFO') == 0:
-                    isLegal = False
-                    print(f'[W] (preLoader.py)PreLoader：{file}插件未加载，缺少PLUGIN_INFO对象')
-
-                if isLegal:
-                    if module.Plugin.__base__.__name__ != 'StandardPlugin':
-                        isLegal = False
-                        print(f'[W] (preLoader.py)PreLoader：{file}插件未加载，找不到StandardPlugin父类') 
-                    try:
-                        module.PLUGIN_INFO['name']
-                        module.PLUGIN_INFO['version']
-                        module.PLUGIN_INFO['description']
-                        module.PLUGIN_INFO['author']
-                        module.PLUGIN_INFO['type']
-                    except:
-                        print(f'[W] (preLoader.py)PreLoader：{file}插件未加载，PLUGIN_INFO键错误')
-                        isLegal = False
-                    try:
-                        if type(module.PLUGIN_INFO['name']) != str or type(module.PLUGIN_INFO['description']) != str or type(module.PLUGIN_INFO['version']) != str or type(module.PLUGIN_INFO['author']) != str:
-                           isLegal = False 
-                           print(f'[W] (preLoader.py)PreLoader：{file}插件加载失败，PLUGIN_INFO值类型错误')
-                        if type(module.PLUGIN_INFO['type']) != int or module.PLUGIN_INFO['name'] > 4 or module.PLUGIN_INFO['name'] < 1:
-                           isLegal = False 
-                           print(f'[W] (preLoader.py)PreLoader：{file}插件加载失败，PLUGIN_INFO值越界')
-                    except:
-                        pass
-                    
-                # 初始化插件对象
-                if isLegal:
-                    if module.PLUGIN_INFO['type'] == 4:   
-                        print(f'[L] (preLoader.py)PreLoader：{file}插件已关闭')
-                        closedPluginNumber += 1
-                    if module.PLUGIN_INFO['type'] == 1:    
-                        self.CHATROOM_MODULE_LIST.setdefault(file, module)
-                        print(f'[L] (preLoader.py)PreLoader：{file}插件加载成功')
-                        loadedPluginNumber += 1
-                    if module.PLUGIN_INFO['type'] == 2:
-                        self.USER_MODULE_LIST.setdefault(file, module)
-                        print(f'[L] (preLoader.py)PreLoader：{file}插件加载成功')
-                        loadedPluginNumber += 1
-                    if module.PLUGIN_INFO['type'] == 3:
-                        self.CHATROOM_MODULE_LIST.setdefault(file, module)
-                        self.USER_MODULE_LIST.setdefault(file, module)
-                        print(f'[L] (preLoader.py)PreLoader：{file}插件加载成功')
-                        loadedPluginNumber += 1
-        print(f'[L] (preLoader.py)PreLoader：插件加载完成，共加载[{loadedPluginNumber}/{totalPluginNumber}]个插件，{totalPluginNumber - loadedPluginNumber - closedPluginNumber}个插件加载失败, {closedPluginNumber}个插件已关闭\n')
 
         # -------------------------------------------------------------------------------------------------------------------------
         # 初始化全局配置文件
@@ -290,6 +226,78 @@ class PreLoader():
                         print(f'[E] (preLoader.py)PreLoader：{chatroomConfigPath}读取失败，JSON文件已重置')
         print(f'[L] (preLoader.py)PreLoader：更新群聊配置文件成功')        
         # -------------------------------------------------------------------------------------------------------------------------
+
+    def __load_plugins(self):
+
+        pluginList = os.listdir(self.__PLUGINS_PATH)
+        totalPluginNumber = 0
+        loadedPluginNumber = 0
+        closedPluginNumber = 0
+        for file in pluginList:
+            # 加载文件类型的插件
+            if os.path.isfile(os.path.join(self.__PLUGINS_PATH, file)) and file[-3:] == '.py':
+
+                totalPluginNumber += 1
+
+                module_spec = importlib.util.spec_from_file_location(f'{file[:-3]}', os.path.join(self.__PLUGINS_PATH, file))
+                module = importlib.util.module_from_spec(module_spec)
+                module_spec.loader.exec_module(module)
+
+                # 插件合法性判断
+                isLegal = True
+                if dir(module).count('Plugin') == 0:
+                    isLegal = False
+                    print(f'[W] (preLoader.py)PreLoader：{file}插件未加载，缺少Plugin类')
+                if dir(module).count('PLUGIN_INFO') == 0:
+                    isLegal = False
+                    print(f'[W] (preLoader.py)PreLoader：{file}插件未加载，缺少PLUGIN_INFO对象')
+
+                if isLegal:
+                    if module.Plugin.__base__.__name__ != 'StandardPlugin':
+                        isLegal = False
+                        print(f'[W] (preLoader.py)PreLoader：{file}插件未加载，找不到StandardPlugin父类') 
+                    try:
+                        module.PLUGIN_INFO['name']
+                        module.PLUGIN_INFO['version']
+                        module.PLUGIN_INFO['description']
+                        module.PLUGIN_INFO['author']
+                        module.PLUGIN_INFO['type']
+                    except:
+                        print(f'[W] (preLoader.py)PreLoader：{file}插件未加载，PLUGIN_INFO键错误')
+                        isLegal = False
+                    try:
+                        if type(module.PLUGIN_INFO['name']) != str or type(module.PLUGIN_INFO['description']) != str or type(module.PLUGIN_INFO['version']) != str or type(module.PLUGIN_INFO['author']) != str:
+                           isLegal = False 
+                           print(f'[W] (preLoader.py)PreLoader：{file}插件加载失败，PLUGIN_INFO值类型错误')
+                        if type(module.PLUGIN_INFO['type']) != int or module.PLUGIN_INFO['name'] > 4 or module.PLUGIN_INFO['name'] < 1:
+                           isLegal = False 
+                           print(f'[W] (preLoader.py)PreLoader：{file}插件加载失败，PLUGIN_INFO值越界')
+                    except:
+                        pass
+                    
+                # 初始化插件对象
+                if isLegal:
+                    if module.PLUGIN_INFO['type'] == 4:   
+                        print(f'[L] (preLoader.py)PreLoader：{file}插件已关闭')
+                        closedPluginNumber += 1
+                    if module.PLUGIN_INFO['type'] == 1:    
+                        self.CHATROOM_MODULE_LIST.setdefault(file, module)
+                        print(f'[L] (preLoader.py)PreLoader：{file}插件加载成功')
+                        loadedPluginNumber += 1
+                    if module.PLUGIN_INFO['type'] == 2:
+                        self.USER_MODULE_LIST.setdefault(file, module)
+                        print(f'[L] (preLoader.py)PreLoader：{file}插件加载成功')
+                        loadedPluginNumber += 1
+                    if module.PLUGIN_INFO['type'] == 3:
+                        self.CHATROOM_MODULE_LIST.setdefault(file, module)
+                        self.USER_MODULE_LIST.setdefault(file, module)
+                        print(f'[L] (preLoader.py)PreLoader：{file}插件加载成功')
+                        loadedPluginNumber += 1
+            
+            # 加载文件夹类型的插件
+            if os.path.isdir(os.path.join(self.__PLUGINS_PATH, file)) and "__init__.py" in os.listdir(os.path.join(self.__PLUGINS_PATH, file)):
+                None
+        print(f'[L] (preLoader.py)PreLoader：插件加载完成，共加载[{loadedPluginNumber}/{totalPluginNumber}]个插件，{totalPluginNumber - loadedPluginNumber - closedPluginNumber}个插件加载失败, {closedPluginNumber}个插件已关闭\n')  
 
     def getGlobalConfig(self, key: str):
         return self.__GLOBAL_CONF_RUNTIME[key]
