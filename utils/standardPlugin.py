@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Union, Tuple, Any
 from utils.runtime import Runtime
+from enum import Enum
 
 class StandardPlugin(ABC):
     @staticmethod
@@ -20,3 +21,8 @@ class StandardPlugin(ABC):
     def scheduleEvent(runtime:Runtime) -> Union[None, str]:
         """
         """
+class PluginType(Enum):
+    GROUP = 1
+    USER = 2
+    BOTH = 3
+    DISABLED = 4
